@@ -16,3 +16,8 @@ class ArtistMiniSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
         read_only_fields = ('id', 'name')
 
+
+class AlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Album
+        fields = ('id', 'title', 'desc')
