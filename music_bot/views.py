@@ -23,3 +23,13 @@ class AlbumViewSet(viewsets.ModelViewSet):
             return AlbumMiniSerializer
         else:
             return AlbumSerializer
+
+
+class SongViewSet(viewsets.ModelViewSet):
+    queryset = Song.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SongMiniSerializer
+        else:
+            return SongSerializer

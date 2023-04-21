@@ -6,6 +6,7 @@ from music_bot.views import *
 router = routers.DefaultRouter()
 router.register('artists', ArtistViewSet)
 router.register('albums', AlbumViewSet)
+router.register('songs', SongViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
