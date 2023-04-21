@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
     'music_bot',
+    'accounts'
 ]
-
+AUTH_USER_MODEL = 'accounts.BaseUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
