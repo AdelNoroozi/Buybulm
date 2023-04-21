@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -55,9 +56,48 @@ class BaseUser(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        if self.is_superuser:
+            type_string = 'superuser'
+        elif self.is_staff:
+            type_string = 'admin'
+        else:
+            type_string = 'user'
+        return f'{self.email}-{type_string}'
 
     class Meta:
         verbose_name = _('Base User')
         verbose_name_plural = _('Base Users')
 
+
+class Profile(models.Model):
+    phone_regex_validator = RegexValidator(
+        regex=r'^(09)\d{9}$',
+        message='invalid phone number'
+    )
+    parent_base_user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='profile',
+                                            verbose_name=_('parent base user'))
+    first_name = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('first name'))
+    last_name = models.CharField(max_length=50, blank=True, null=True, verbose_name=_('last name'))
+    phone_number = models.CharField(validators=[phone_regex_validator], max_length=20, blank=True, null=True,
+                                    verbose_name=_('phone number'))
+    avatar = models.ImageField(blank=True, null=True, verbose_name='avatar',
+                               upload_to='images/',
+                               )
+
+    def __str__(self):
+        return self.parent_base_user.email
+
+    class Meta:
+        verbose_name = _('Profile')
+        verbose_name_plural = _('Profiles')
+
+
+class Admin(models.Model):
+    SECTIONS = (('B', 'bot'),
+                ('S', 'store'))
+    parent_base_user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='admin',
+                                            verbose_name=_('parent base user'))
+    section = models.CharField(max_length=10, choices=SECTIONS, verbose_name=_('section'))
+
+    def __str__(self):
+        return f'{self.parent_base_user.email}-{self.section} section'
