@@ -36,7 +36,7 @@ class Song(models.Model):
     artists = models.ManyToManyField(Artist, verbose_name=_('artists'))
     album = models.ForeignKey(Album, related_name='songs', on_delete=models.CASCADE, verbose_name='album')
     release_date = models.DateField(auto_now_add=True, verbose_name=_('release date'))
-    # file = models.FileField(verbose_name=_('file'))
+    file = models.FileField(verbose_name=_('file'), upload_to='musics/')
     lyrics = models.TextField(blank=True, null=True, verbose_name=_('lyrics'))
     plays = models.PositiveIntegerField(default=0, verbose_name=_('plays'))
 

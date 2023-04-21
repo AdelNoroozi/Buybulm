@@ -29,3 +29,17 @@ class AlbumMiniSerializer(serializers.ModelSerializer):
         model = Album
         fields = ('id', 'title', 'artists', 'cover')
         read_only_fields = ('id', 'title', 'artists', 'cover')
+
+
+class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = ('id', 'title', 'desc', 'cover', 'artists', 'album', 'release_date', 'lyrics', 'plays')
+        read_only_fields = ('id',)
+
+
+class SongMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = ('id', 'title', 'cover', 'artists', 'album', 'plays')
+        read_only_fields = ('id', 'title', 'cover', 'artists', 'album', 'plays')
