@@ -8,6 +8,9 @@ class Artist(models.Model):
     photo = models.ImageField(blank=True, null=True, verbose_name='image',
                               upload_to='images/')
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = _('Artist')
         verbose_name_plural = _('Artists')
@@ -21,6 +24,12 @@ class Album(models.Model):
     cover = models.ImageField(blank=True, null=True, verbose_name='image',
                               upload_to='images/')
     min_price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name=_('minimum price'))
+
+    def __str__(self):
+        artists_string = ''
+        for artist in self.artists.all():
+            artists_string += f'-{artist.name}'
+        return f'{self.title}{artists_string}'
 
     class Meta:
         verbose_name = _('Album')
@@ -39,6 +48,12 @@ class Song(models.Model):
     file = models.FileField(verbose_name=_('file'), upload_to='musics/')
     lyrics = models.TextField(blank=True, null=True, verbose_name=_('lyrics'))
     plays = models.PositiveIntegerField(default=0, verbose_name=_('plays'))
+
+    def __str__(self):
+        artists_string = ''
+        for artist in self.artists.all():
+            artists_string += f'-{artist.name}'
+        return f'{self.title}{artists_string}'
 
     class Meta:
         verbose_name = _('Song')

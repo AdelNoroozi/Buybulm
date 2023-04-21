@@ -13,3 +13,13 @@ class ArtistViewSet(viewsets.ModelViewSet):
             return ArtistMiniSerializer
         else:
             return ArtistSerializer
+
+
+class AlbumViewSet(viewsets.ModelViewSet):
+    queryset = Album.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return AlbumMiniSerializer
+        else:
+            return AlbumSerializer
