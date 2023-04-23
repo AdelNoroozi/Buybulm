@@ -14,5 +14,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair_view'),
     path('token/refresh/', TokenObtainPairView.as_view(), name='token_obtain_pair_view'),
     path('whoami/', GetProfileView.as_view(), name='get_profile'),
-    path('change_password/', ChangePasswordView.as_view(), name='change_password')
+    path('change_password/', ChangePasswordView.as_view(), name='change_password'),
+    path('change_profile_info/', ChangeProfileInfoView.as_view(), name='change_profile_info'),
 ]

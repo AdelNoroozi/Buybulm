@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import render
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -141,3 +143,37 @@ class ChangePasswordView(APIView):
         user.save()
         response = {'message': 'password changed successfully.'}
         return Response(response, status=status.HTTP_202_ACCEPTED)
+
+
+class ChangeProfileInfoView(APIView):
+    def patch(self, request):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('not authenticated')
+        user = request.user
+        if user.is_staff:
+            response = {'message': "staff users do not have a profile"}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            first_name = request.data['first_name']
+            last_name = request.data['last_name']
+            phone_number = request.data['phone_number']
+            avatar = request.data['avatar']
+        except Exception as e:
+            response = {'message': f'field error {str(e)}'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        profile = Profile.objects.get(parent_base_user=user)
+        if not first_name == '':
+            profile.first_name = first_name
+        if not last_name == '':
+            profile.last_name = last_name
+        phone_number_pattern = re.compile(r'^(09)\d{9}$')
+        if not phone_number == '':
+            if phone_number_pattern.match(phone_number):
+                profile.phone_number = phone_number
+            else:
+                response = {'message': "invalid phone number"}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        profile.avatar = avatar
+        profile.save()
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
