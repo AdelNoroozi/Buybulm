@@ -86,3 +86,22 @@ class AdminViewSet(mixins.ListModelMixin,
                    GenericViewSet):
     queryset = Admin.objects.all()
     serializer_class = AdminSerializer
+
+    @action(detail=True, methods=['PATCH', ])
+    def set_section(self, request, pk=None):
+        if not Admin.objects.filter(id=pk).exists():
+            response = {'message': 'admin not found'}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        try:
+            section = request.data['section']
+        except:
+            response = {'message': 'field error: section'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        if not (section == 'B' or section == 'S'):
+            response = {'message': 'invalid section'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        admin = Admin.objects.get(id=pk)
+        admin.section = section
+        admin.save()
+        serializer = AdminSerializer(admin)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

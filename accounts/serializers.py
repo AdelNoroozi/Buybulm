@@ -67,7 +67,9 @@ class AddAdminSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.Meta.model.objects.create_admin(**self.validated_data)
-        Admin.objects.create(parent_base_user=user)
+        admin = Admin.objects.create(parent_base_user=user)
+        admin.section = 'UD'
+        admin.save()
         return user
 
 

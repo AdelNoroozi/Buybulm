@@ -94,10 +94,18 @@ class Profile(models.Model):
 
 class Admin(models.Model):
     SECTIONS = (('B', 'bot'),
-                ('S', 'store'))
+                ('S', 'store'),
+                ('UD', 'undefined'))
     parent_base_user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='admin',
                                             verbose_name=_('parent base user'))
     section = models.CharField(max_length=10, choices=SECTIONS, verbose_name=_('section'))
 
     def __str__(self):
-        return f'{self.parent_base_user.email}-{self.section} section'
+        if self.section == 'B':
+            section_string = 'bot'
+        elif self.section == 'S':
+            section_string = 'store'
+        elif self.section == 'UD':
+            section_string = 'undefined'
+
+        return f'{self.parent_base_user.email}-{section_string} section'
