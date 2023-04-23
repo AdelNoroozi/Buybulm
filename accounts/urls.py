@@ -13,5 +13,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair_view'),
     path('token/refresh/', TokenObtainPairView.as_view(), name='token_obtain_pair_view'),
-    path('whoami/', GetProfileView.as_view(), name='get_profile')
+    path('whoami/', GetProfileView.as_view(), name='get_profile'),
+    path('change_password/', ChangePasswordView.as_view(), name='change_password')
 ]

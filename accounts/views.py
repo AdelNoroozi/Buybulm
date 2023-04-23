@@ -113,8 +113,31 @@ class GetProfileView(APIView):
             raise AuthenticationFailed('not authenticated')
         user = request.user
         if user.is_staff:
-            response = {'message': 'can not perform this action on superuser'}
+            response = {'message': 'staff users do not have a profile'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         profile = Profile.objects.get(parent_base_user=user)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ChangePasswordView(APIView):
+    def patch(self, request):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('not authenticated')
+        user = request.user
+        try:
+            current_password = request.data['current_password']
+            new_password = request.data['new_password']
+        except Exception as e:
+            response = {'message': f'field error {str(e)}'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        if not user.check_password(current_password):
+            response = {'message': 'incorrect password.'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        if current_password == new_password:
+            response = {'message': 'new password can not be the same as current password.'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        user.password = make_password(new_password)
+        user.save()
+        response = {'message': 'password changed successfully.'}
+        return Response(response, status=status.HTTP_202_ACCEPTED)
