@@ -52,3 +52,29 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'parent_base_user', 'first_name', 'last_name', 'avatar', 'phone_number')
         read_only_fields = ('id', 'parent_base_user')
+
+
+class AddAdminSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+
+    class Meta:
+        model = BaseUser
+        fields = ('email', 'password')
+
+    def validate(self, attrs):
+        validate_password(attrs.get('password'))
+        return attrs
+
+    def create(self, validated_data):
+        user = self.Meta.model.objects.create_admin(**self.validated_data)
+        Admin.objects.create(parent_base_user=user)
+        return user
+
+
+class AdminSerializer(serializers.ModelSerializer):
+    parent_base_user = UserMiniSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Admin
+        fields = ('id', 'parent_base_user', 'section')
+        read_only_fields = ('id', 'parent_base_user')

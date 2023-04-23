@@ -74,3 +74,11 @@ class BaseUserViewSet(mixins.ListModelMixin,
         user.save()
         response = {'message': 'account deactivated successfully.'}
         return Response(response, status=status.HTTP_200_OK)
+
+
+class AddAdminView(CreateAPIView):
+    queryset = BaseUser.objects.all()
+    serializer_class = AddAdminSerializer
+# class AdminViewSet(mixins.ListModelMixin,
+#                    mixins.RetrieveModelMixin,
+#                     )
