@@ -19,3 +19,19 @@ class AddUserSerializer(serializers.ModelSerializer):
         user = self.Meta.model.objects.create_user(**self.validated_data)
         Profile.objects.create(parent_base_user=user)
         return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField(method_name='get_user_type')
+
+    class Meta:
+        model = BaseUser
+        fields = ('id', 'email', 'is_active', 'date_joined', 'modified_at', 'type')
+
+    def get_user_type(self, base_user):
+        if base_user.is_superuser:
+            return 'superuser'
+        elif base_user.is_staff:
+            return 'admin'
+        else:
+            return 'user'

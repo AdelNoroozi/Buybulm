@@ -9,9 +9,17 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import *
-from accounts.serializers import AddUserSerializer
+from accounts.serializers import *
 
 
 class RegisterUserView(CreateAPIView):
     queryset = BaseUser.objects.all()
     serializer_class = AddUserSerializer
+
+
+class BaseUserViewSet(mixins.ListModelMixin,
+                      mixins.RetrieveModelMixin,
+                      GenericViewSet):
+    queryset = BaseUser.objects.all()
+    serializer_class = UserSerializer
+

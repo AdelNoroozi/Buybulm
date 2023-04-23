@@ -1,7 +1,11 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from accounts.views import *
 
-from accounts.views import RegisterUserView
+router = DefaultRouter()
+router.register('users', BaseUserViewSet)
 
 urlpatterns = [
-    path('register/', RegisterUserView.as_view(), name='register')
+    path('register/', RegisterUserView.as_view(), name='register'),
+    path('', include(router.urls))
 ]
