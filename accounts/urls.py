@@ -4,6 +4,7 @@ from accounts.views import *
 
 router = DefaultRouter()
 router.register('users', BaseUserViewSet)
+router.register('admins', AdminViewSet)
 
 urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
