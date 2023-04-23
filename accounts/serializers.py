@@ -27,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
         fields = ('id', 'email', 'is_active', 'date_joined', 'modified_at', 'type')
+        read_only_fields = ('id', 'email', 'date_joined', 'modified_at', 'type')
 
     def get_user_type(self, base_user):
         if base_user.is_superuser:
@@ -35,3 +36,19 @@ class UserSerializer(serializers.ModelSerializer):
             return 'admin'
         else:
             return 'user'
+
+
+class UserMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ('email', 'is_active', 'date_joined')
+        read_only_fields = ('email', 'is_active', 'date_joined')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    parent_base_user = UserMiniSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'parent_base_user', 'first_name', 'last_name', 'avatar', 'phone_number')
+        read_only_fields = ('id', 'parent_base_user')
