@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -105,3 +105,16 @@ class AdminViewSet(mixins.ListModelMixin,
         admin.save()
         serializer = AdminSerializer(admin)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class GetProfileView(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            raise AuthenticationFailed('not authenticated')
+        user = request.user
+        if user.is_staff:
+            response = {'message': 'can not perform this action on superuser'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        profile = Profile.objects.get(parent_base_user=user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
