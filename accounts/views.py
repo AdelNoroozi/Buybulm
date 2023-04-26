@@ -11,12 +11,14 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import *
+from accounts.permissions import NotAuthenticated
 from accounts.serializers import *
 
 
 class RegisterUserView(CreateAPIView):
     queryset = BaseUser.objects.all()
     serializer_class = AddUserSerializer
+    permission_classes = (NotAuthenticated,)
 
 
 class BaseUserViewSet(mixins.ListModelMixin,
