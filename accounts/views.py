@@ -127,6 +127,8 @@ class AdminViewSet(mixins.ListModelMixin,
 
 
 class GetProfileView(APIView):
+    permission_classes = (IsAuthenticatedAndNormalUser,)
+
     def get(self, request):
         if not request.user.is_authenticated:
             raise AuthenticationFailed('not authenticated')
@@ -140,6 +142,8 @@ class GetProfileView(APIView):
 
 
 class ChangePasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def patch(self, request):
         if not request.user.is_authenticated:
             raise AuthenticationFailed('not authenticated')
@@ -163,6 +167,8 @@ class ChangePasswordView(APIView):
 
 
 class ChangeProfileInfoView(APIView):
+    permission_classes = (IsAuthenticatedAndNormalUser,)
+
     def patch(self, request):
         if not request.user.is_authenticated:
             raise AuthenticationFailed('not authenticated')
