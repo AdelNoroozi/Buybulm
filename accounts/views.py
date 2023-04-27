@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import *
-from accounts.permissions import NotAuthenticated
+from accounts.permissions import *
 from accounts.serializers import *
 
 
@@ -24,8 +24,16 @@ class RegisterUserView(CreateAPIView):
 class BaseUserViewSet(mixins.ListModelMixin,
                       mixins.RetrieveModelMixin,
                       GenericViewSet):
-    queryset = BaseUser.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return BaseUser.objects.all()
+        elif self.request.user.is_staff:
+            return BaseUser.objects.filter(is_staff=False)
+        else:
+            return BaseUser.objects.none()
 
     @classmethod
     def get_user_by_id(cls, _id):

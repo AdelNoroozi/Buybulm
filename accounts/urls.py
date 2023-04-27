@@ -4,8 +4,8 @@ from accounts.views import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
-router.register('users', BaseUserViewSet)
-router.register('admins', AdminViewSet)
+router.register('users', BaseUserViewSet, basename='BaseUser')
+router.register('admins', AdminViewSet, basename='Admin')
 
 urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register'),
