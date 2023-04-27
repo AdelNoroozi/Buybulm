@@ -22,3 +22,8 @@ class IsUserAdmin(BasePermission):
             return False
         admin = Admin.objects.get(parent_base_user=user)
         return admin.section == 'U'
+
+
+class IsSuperUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser

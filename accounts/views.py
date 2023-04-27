@@ -97,6 +97,7 @@ class BaseUserViewSet(mixins.ListModelMixin,
 class AddAdminView(CreateAPIView):
     queryset = BaseUser.objects.all()
     serializer_class = AddAdminSerializer
+    permission_classes = (IsSuperUser,)
 
 
 class AdminViewSet(mixins.ListModelMixin,
