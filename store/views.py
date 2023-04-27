@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, mixins
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -77,3 +78,36 @@ class PaymentViewSet(mixins.ListModelMixin,
             return PaymentMiniSerializer
         else:
             return PaymentSerializer
+
+    @action(detail=True, methods=['PATCH', ])
+    def change_payment_status(self, request, pk=None):
+        if not Payment.objects.filter(id=pk).exists():
+            response = {'message': 'payment not found'}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        try:
+            payment_status = request.data['status']
+        except Exception as e:
+            response = {'message': f'field error: {str(e)}'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        payment = Payment.objects.get(id=pk)
+        if payment_status == payment.status:
+            response = {'message': f'this payment is already in {payment_status} status'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        if (payment_status != 'P') and (payment_status != 'FC') and (payment_status != 'RTP') and (
+                payment_status != 'R'):
+            response = {'message': 'invalid status'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        if payment_status == 'P':
+            try:
+                receipt = request.data['receipt']
+            except Exception as e:
+                response = {'message': f'field error: {str(e)}'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            payment.receipt = receipt
+        elif payment_status == 'FC':
+            # send files
+            pass
+        payment.status = payment_status
+        payment.save()
+        response = {'message': 'status changed successfully'}
+        return Response(response, status=status.HTTP_200_OK)
