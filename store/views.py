@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from accounts.models import Profile
 from music_bot.models import Album
 from store.models import Payment
+from store.serializers import PaymentSerializer
 
 
 class CreatePaymentView(APIView):
@@ -55,5 +56,5 @@ class CreatePaymentView(APIView):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         payment = Payment.objects.create(user=profile, album=album, price=suggesting_price, message=message,
                                          user_preview_name=user_preview_name, status='RTP')
-        response = {'message': 'payment created successfully'}
-        return Response(response, status=status.HTTP_201_CREATED)
+        serializer = PaymentSerializer(payment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
