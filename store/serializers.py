@@ -8,3 +8,10 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ('id', 'user', 'album', 'payment_time', 'price', 'receipt', 'message', 'user_preview_name', 'status')
         read_only_fields = ('id', 'user', 'album', 'payment_time', 'price', 'receipt', 'message', 'user_preview_name')
+
+
+class PaymentMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ('id', 'user', 'album', 'payment_time', 'price', 'status')
+        read_only_fields = ('id', 'user', 'album', 'payment_time', 'price', 'status')

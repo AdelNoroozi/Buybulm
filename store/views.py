@@ -1,11 +1,15 @@
-from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, mixins
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import Profile
 from music_bot.models import Album
+from store.filters import PaymentFilter
 from store.models import Payment
-from store.serializers import PaymentSerializer
+from store.serializers import PaymentSerializer, PaymentMiniSerializer
 
 
 class CreatePaymentView(APIView):
@@ -58,3 +62,18 @@ class CreatePaymentView(APIView):
                                          user_preview_name=user_preview_name, status='RTP')
         serializer = PaymentSerializer(payment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PaymentViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     GenericViewSet):
+    queryset = Payment.objects.all()
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = PaymentFilter
+    ordering_fields = ['payment_time', 'price']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PaymentMiniSerializer
+        else:
+            return PaymentSerializer
