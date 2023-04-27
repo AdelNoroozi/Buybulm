@@ -11,6 +11,13 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
 
+    def get_plays(self):
+        songs = Song.objects.filter(artists=self.id)
+        sum_plays = 0
+        for song in songs:
+            sum_plays += song.plays
+        return sum_plays
+
     class Meta:
         verbose_name = _('Artist')
         verbose_name_plural = _('Artists')
@@ -49,7 +56,7 @@ class Song(models.Model):
     cover = models.ImageField(blank=True, null=True, verbose_name='image',
                               upload_to='images/',
                               )
-    artists = models.ManyToManyField(Artist, verbose_name=_('artists'))
+    artists = models.ManyToManyField(Artist, verbose_name=_('artists'), related_name='songs')
     album = models.ForeignKey(Album, related_name='songs', on_delete=models.CASCADE, blank=True, null=True,
                               verbose_name=_('album'))
     release_date = models.DateField(auto_now_add=True, verbose_name=_('release date'))

@@ -12,11 +12,13 @@ from music_bot.serializers import *
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
-    queryset = Artist.objects.all()
     permission_classes = (BotPermission,)
     filter_backends = [SearchFilter, ]
     search_fields = ['name', 'desc']
     pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        return Artist.objects.annotate(total_play=Sum('songs__plays')).order_by('-total_play')
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -26,7 +28,6 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 
 class AlbumViewSet(viewsets.ModelViewSet):
-    queryset = Album.objects.all()
     permission_classes = (BotPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = AlbumFilter

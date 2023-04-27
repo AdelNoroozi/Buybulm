@@ -6,15 +6,15 @@ from music_bot.models import *
 class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
-        fields = ('id', 'name', 'desc')
-        read_only_fields = ('id',)
+        fields = ('id', 'name', 'desc', 'get_plays')
+        read_only_fields = ('id', 'get_plays')
 
 
 class ArtistMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
-        fields = ('id', 'name')
-        read_only_fields = ('id', 'name')
+        fields = ('id', 'name', 'get_plays')
+        read_only_fields = ('id', 'name', 'get_plays')
 
 
 class AlbumSerializer(serializers.ModelSerializer):
