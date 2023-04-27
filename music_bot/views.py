@@ -1,11 +1,13 @@
 from django.db.models import Sum
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-from accounts.permissions import BotPermission
+from rest_framework.response import Response
+
+from accounts.permissions import BotPermission, IsAuthenticated
 from music_bot.filters import AlbumFilter, SongFilter
 from music_bot.models import *
 from music_bot.serializers import *
@@ -58,3 +60,14 @@ class SongViewSet(viewsets.ModelViewSet):
             return SongMiniSerializer
         else:
             return SongSerializer
+
+    @action(detail=True, methods=['PATCH', ], permission_classes=[IsAuthenticated])
+    def add_play(self, request, pk=None):
+        if not Song.objects.filter(id=pk).exists():
+            response = {'message': 'album not found'}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        song = Song.objects.get(id=pk)
+        song.plays += 1
+        song.save()
+        serializer = SongSerializer(song)
+        return Response(serializer.data, status=status.HTTP_200_OK)

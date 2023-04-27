@@ -8,9 +8,9 @@ class NotAuthenticated(BasePermission):
         return request.user.is_anonymous
 
 
-# class IsAdmin(BasePermission):
-#     def has_permission(self, request, view):
-#         return request.user.is_staff
+class IsAuthenticated(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
 
 
 class IsUserAdmin(BasePermission):
