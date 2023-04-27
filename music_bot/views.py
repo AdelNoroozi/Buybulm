@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 
+from accounts.permissions import BotPermission
 from music_bot.models import *
 from music_bot.serializers import *
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
     queryset = Artist.objects.all()
+    permission_classes = (BotPermission,)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -17,6 +19,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 class AlbumViewSet(viewsets.ModelViewSet):
     queryset = Album.objects.all()
+    permission_classes = (BotPermission,)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -27,6 +30,7 @@ class AlbumViewSet(viewsets.ModelViewSet):
 
 class SongViewSet(viewsets.ModelViewSet):
     queryset = Song.objects.all()
+    permission_classes = (BotPermission,)
 
     def get_serializer_class(self):
         if self.action == 'list':
