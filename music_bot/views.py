@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.shortcuts import render
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
@@ -5,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from accounts.permissions import BotPermission
+from music_bot.filters import AlbumFilter
 from music_bot.models import *
 from music_bot.serializers import *
 
@@ -24,16 +26,16 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 
 class AlbumViewSet(viewsets.ModelViewSet):
+    queryset = Album.objects.all()
     permission_classes = (BotPermission,)
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = AlbumFilter
     search_fields = ['title', 'desc', 'artists__name']
-    ordering_fields = ['release_date', 'min_price']
+    ordering_fields = ['release_date']
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        albums = Album.objects.all()
-        sorted_results = sorted(albums, key=lambda a: a.get_plays())
-        return sorted_results
+        return Album.objects.annotate(total_play=Sum('songs__plays')).order_by('-total_play')
 
     def get_serializer_class(self):
         if self.action == 'list':
