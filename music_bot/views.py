@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from accounts.permissions import BotPermission
@@ -23,12 +24,16 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 
 class AlbumViewSet(viewsets.ModelViewSet):
-    queryset = Album.objects.all()
     permission_classes = (BotPermission,)
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'desc', 'artists__name']
     ordering_fields = ['release_date', 'min_price']
     pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        albums = Album.objects.all()
+        sorted_results = sorted(albums, key=lambda a: a.get_plays())
+        return sorted_results
 
     def get_serializer_class(self):
         if self.action == 'list':

@@ -31,6 +31,13 @@ class Album(models.Model):
             artists_string += f'-{artist.name}'
         return f'{self.title}{artists_string}'
 
+    def get_plays(self):
+        songs = Song.objects.filter(album=self)
+        sum_plays = 0
+        for song in songs:
+            sum_plays += song.plays
+        return sum_plays
+
     class Meta:
         verbose_name = _('Album')
         verbose_name_plural = _('Albums')
