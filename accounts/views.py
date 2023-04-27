@@ -25,7 +25,7 @@ class BaseUserViewSet(mixins.ListModelMixin,
                       mixins.RetrieveModelMixin,
                       GenericViewSet):
     serializer_class = UserSerializer
-    permission_classes = (IsAdmin,)
+    permission_classes = (IsUserAdmin,)
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -109,7 +109,7 @@ class AdminViewSet(mixins.ListModelMixin,
         except:
             response = {'message': 'field error: section'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        if not (section == 'B' or section == 'S'):
+        if not (section == 'B' or section == 'S' or section == 'U'):
             response = {'message': 'invalid section'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         admin = Admin.objects.get(id=pk)
