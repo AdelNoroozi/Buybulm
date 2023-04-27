@@ -54,38 +54,44 @@ class BaseUserViewSet(mixins.ListModelMixin,
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['PATCH', ])
-    def activate_account(self, request, pk=None):
+    def change_activation_status(self, request, pk=None):
         user = BaseUserViewSet.get_user_by_id(_id=pk)
         if not user:
             response = {'message': "user not found"}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
         if user.is_superuser:
             response = {'message': 'can not perform this action on superuser'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
+        if user.is_staff and (not request.user.is_superuser):
+            response = {'message': 'only superusers can change staff users status'}
+            return Response(response, status=status.HTTP_403_FORBIDDEN)
         if user.is_active:
-            response = {'message': 'account is already active.'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        user.is_active = True
-        user.save()
-        response = {'message': 'account activated successfully.'}
-        return Response(response, status=status.HTTP_200_OK)
+            user.is_active = False
+            user.save()
+            response = {'message': 'account deactivated successfully.'}
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            user.is_active = True
+            user.save()
+            response = {'message': 'account activated successfully.'}
+            return Response(response, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['PATCH', ])
-    def deactivate_account(self, request, pk=None):
-        user = BaseUserViewSet.get_user_by_id(_id=pk)
-        if not user:
-            response = {'message': "user not found"}
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
-        if user.is_superuser:
-            response = {'message': 'can not perform this action on superuser'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        if not user.is_active:
-            response = {'message': 'account is already deactivated.'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        user.is_active = False
-        user.save()
-        response = {'message': 'account deactivated successfully.'}
-        return Response(response, status=status.HTTP_200_OK)
+    # @action(detail=True, methods=['PATCH', ])
+    # def deactivate_account(self, request, pk=None):
+    #     user = BaseUserViewSet.get_user_by_id(_id=pk)
+    #     if not user:
+    #         response = {'message': "user not found"}
+    #         return Response(response, status=status.HTTP_404_NOT_FOUND)
+    #     if user.is_superuser:
+    #         response = {'message': 'can not perform this action on superuser'}
+    #         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    #     if not user.is_active:
+    #         response = {'message': 'account is already deactivated.'}
+    #         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    #     user.is_active = False
+    #     user.save()
+    #     response = {'message': 'account deactivated successfully.'}
+    #     return Response(response, status=status.HTTP_200_OK)
 
 
 class AddAdminView(CreateAPIView):
