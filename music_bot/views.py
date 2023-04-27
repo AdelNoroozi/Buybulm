@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from accounts.permissions import BotPermission
-from music_bot.filters import AlbumFilter
+from music_bot.filters import AlbumFilter, SongFilter
 from music_bot.models import *
 from music_bot.serializers import *
 
@@ -48,6 +48,7 @@ class SongViewSet(viewsets.ModelViewSet):
     queryset = Song.objects.all()
     permission_classes = (BotPermission,)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = SongFilter
     search_fields = ['title', 'desc', 'artists__name', 'album__title', 'lyrics']
     ordering_fields = ['release_date', 'plays']
 

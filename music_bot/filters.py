@@ -10,3 +10,12 @@ class AlbumFilter(FilterSet):
             'artists': ['exact'],
 
         }
+
+
+class SongFilter(FilterSet):
+    class Meta:
+        model = Song
+        fields = {
+            'artists': ['exact'],
+            'album': ['exact'],
+        }
