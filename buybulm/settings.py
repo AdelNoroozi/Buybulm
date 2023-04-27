@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django_filters',
 
     'music_bot',
-    'accounts'
+    'accounts',
+    'store',
+
 ]
 AUTH_USER_MODEL = 'accounts.BaseUser'
 MIDDLEWARE = [
