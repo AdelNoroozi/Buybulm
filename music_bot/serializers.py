@@ -17,18 +17,32 @@ class ArtistMiniSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'get_plays')
 
 
+class SongsInAlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = ('id', 'title', 'cover', 'artists', 'plays')
+        read_only_fields = ('id', 'title', 'cover', 'artists', 'plays')
+
+
 class AlbumSerializer(serializers.ModelSerializer):
+    songs = SongsInAlbumSerializer(many=True)
+
     class Meta:
         model = Album
-        fields = ('id', 'title', 'desc', 'release_date', 'artists', 'cover', 'min_price', 'get_plays')
-        read_only_fields = ('id', 'get_plays')
+        fields = ('id', 'title', 'desc', 'release_date', 'artists', 'cover', 'min_price', 'get_plays', 'songs')
+        read_only_fields = ('id', 'get_plays', 'songs')
 
 
 class AlbumMiniSerializer(serializers.ModelSerializer):
+    number_of_songs = serializers.SerializerMethodField(method_name='get_number_of_songs')
+
     class Meta:
         model = Album
-        fields = ('id', 'title', 'artists', 'cover', 'get_plays')
-        read_only_fields = ('id', 'title', 'artists', 'cover', 'get_plays')
+        fields = ('id', 'title', 'artists', 'cover', 'get_plays', 'number_of_songs')
+        read_only_fields = ('id', 'title', 'artists', 'cover', 'get_plays', 'number_of_songs')
+
+    def get_number_of_songs(self, album):
+        return Song.objects.filter(album=album).count()
 
 
 class SongSerializer(serializers.ModelSerializer):
