@@ -28,8 +28,8 @@ class CreatePaymentView(APIView):
         if not Profile.objects.filter(parent_base_user=user).exists():
             # if everything goes right, this condition won't occur at all.
             # this if statement just makes sure that nothing unexpected has happened.
-            response = {'message': 'profile does not exist for this user'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            response = {'message': 'no profile found for this user'}
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
         profile = Profile.objects.get(parent_base_user=user)
         try:
             album_id = request.data['album_id']
