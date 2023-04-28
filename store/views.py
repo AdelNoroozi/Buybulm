@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from accounts.models import Profile
+from accounts.permissions import IsAuthenticatedAndNormalUser, StorePermission
 from music_bot.models import Album
 from store.filters import PaymentFilter
 from store.models import Payment
@@ -14,6 +15,8 @@ from store.serializers import PaymentSerializer, PaymentMiniSerializer
 
 
 class CreatePaymentView(APIView):
+    permission_classes = (IsAuthenticatedAndNormalUser,)
+
     def post(self, request):
         if not request.user.is_authenticated:
             response = {'message': 'user is not authenticated'}
@@ -69,6 +72,7 @@ class PaymentViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      GenericViewSet):
     queryset = Payment.objects.all()
+    permission_classes = (StorePermission, )
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = PaymentFilter
     ordering_fields = ['payment_time', 'price']

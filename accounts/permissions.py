@@ -29,11 +29,6 @@ class IsSuperUser(BasePermission):
         return request.user.is_superuser
 
 
-class IsAuthenticated(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated
-
-
 class IsAuthenticatedAndNormalUser(BasePermission):
     def has_permission(self, request, view):
         return not request.user.is_staff
@@ -51,3 +46,17 @@ class BotPermission(BasePermission):
                 return False
             admin = Admin.objects.get(parent_base_user=user)
             return admin.section == 'B'
+
+
+class StorePermission(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_superuser:
+            return True
+        if user.is_staff:
+            try:
+                admin = Admin.objects.get(parent_base_user=user)
+            except:
+                return False
+            return admin.section == 'S'
+        return False
