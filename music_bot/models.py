@@ -32,6 +32,7 @@ class Album(models.Model):
                               upload_to='images/')
     min_price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name=_('minimum price'))
     is_public = models.BooleanField(default=False, verbose_name=_('is public'))
+    file = models.FileField(verbose_name=_('file'), upload_to='albums/', blank=True, null=True)
 
     def __str__(self):
         artists_string = ''

@@ -72,7 +72,7 @@ class PaymentViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      GenericViewSet):
     queryset = Payment.objects.all()
-    permission_classes = (StorePermission, )
+    permission_classes = (StorePermission,)
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = PaymentFilter
     ordering_fields = ['payment_time', 'price']
