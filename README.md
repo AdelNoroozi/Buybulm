@@ -25,7 +25,7 @@ Users:
   
   ● Change ther information
   
-  ● Login (get jwt token)
+  ● Login (get JWT token)
   
   Bot
   
