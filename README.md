@@ -9,8 +9,8 @@ This project uses PostgreSQL for storing data.
 <img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/python-icon.png" heigth="32" >
 <img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/django-icon.png" heigth="32" >
 <img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/django-rest-icon.png" heigth="32" >
-<img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/postgresql-icon.png" heigth="32" >
-<img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/jwt-icon.png" heigth="32" >
+<img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/postgresql-icon.png" heigth="31" >
+<img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/jwt-icon.png" heigth="31" >
 
 # Description
 Users:
