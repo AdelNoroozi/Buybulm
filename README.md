@@ -1,8 +1,11 @@
 ## Introduction
 <img src="https://raw.githubusercontent.com/AdelNoroozi/Buybulm/main/resources/banner.jpg" width="400" >
 This is a music platform containing two parts:
+
 - A music bot that can be used for streaming musics and conains all kind of information about artists, albums and songs
+- 
 - A music store for buying albums and gaining access to the songs of that album
+- 
 This project uses PostgreSQL for storing data.
 
 # Tools
